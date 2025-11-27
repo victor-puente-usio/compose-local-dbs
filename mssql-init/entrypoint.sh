@@ -1,13 +1,14 @@
-
 #!/bin/bash
-# Start SQL Server in background
+# ...existing code...
 /opt/mssql/bin/sqlservr &
 
-# Wait for SQL Server to be ready
-sleep 30
+# Wait until SQL Server accepts connections
+until /opt/mssql-tools18/bin/sqlcmd -S "tcp:localhost,1433;TrustServerCertificate=yes" -U SA -P "$MSSQL_SA_PASSWORD" -Q "SELECT 1" >/dev/null 2>&1; do
+  sleep 1
+done
 
-# Run initialization script
-/opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "$MSSQL_SA_PASSWORD" -i /docker-entrypoint-initdb.d/init.sql
+# Run initialization script (trust server certificate)
+# note: pass the TrustServerCertificate option in the server string
+/opt/mssql-tools18/bin/sqlcmd -S "tcp:localhost,1433;TrustServerCertificate=yes" -U SA -P "$MSSQL_SA_PASSWORD" -i /docker-entrypoint-initdb.d/init.sql
 
-# Keep container running
 wait
