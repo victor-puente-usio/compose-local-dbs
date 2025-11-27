@@ -22,19 +22,19 @@ services:
     entrypoint: ["/bin/bash", "/docker-entrypoint-initdb.d/entrypoint.sh"]
 
 
-  mysql:
-    image: mysql:5.7
-    container_name: mysql-local
-    environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-    ports:
-      - "${MYSQL_PORT}:3306"
-    networks:
-      - db-network
-    volumes:
-      - mysql-data:/var/lib/mysql
-      - ./mysql-init:/docker-entrypoint-initdb.d  # MySQL init scripts
+  # mysql:
+  #   image: mysql:5.7
+  #   container_name: mysql-local
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+  #     - MYSQL_DATABASE=${MYSQL_DATABASE}
+  #   ports:
+  #     - "${MYSQL_PORT}:3306"
+  #   networks:
+  #     - db-network
+  #   volumes:
+  #     - mysql-data:/var/lib/mysql
+  #     - ./mysql-init:/docker-entrypoint-initdb.d  # MySQL init scripts
 
 volumes:
   mssql-data:
