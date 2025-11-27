@@ -33,46 +33,56 @@ CREATE TABLE Orders (
 GO
 
 -- Insert 50 Customers
-DECLARE @i INT = 1;
-WHILE @i <= 50
+DELIMITER $$
+
+CREATE PROCEDURE init_data()    
 BEGIN
-    INSERT INTO Customers (Name, Email, City)
-    VALUES (
-        CONCAT('Customer', @i),
-        CONCAT('customer', @i, '@example.com'),
-        CASE WHEN @i % 3 = 0 THEN 'Austin'
-             WHEN @i % 3 = 1 THEN 'Dallas'
-             ELSE 'Houston' END
+    DECLARE i INT DEFAULT 1;
+    DECLARE j INT DEFAULT 1; 
+    DECLARE k INT DEFAULT 1;    
+
+WHILE i <= 50 DO 
+    INSERT INTO Customers
+    (Name,Email, City)
+    VALUES(
+        CONCAT("Customer", i),
+        CONCAT("custoomer", i), 
+    CASE WHEN MOD(i,3)=0 THEN "Austin"
+         WHEN MOD(i,3)=1 THEN "Dallas"
+         ELSE "Houston" END
     );
-    SET @i = @i + 1;
-END
-GO
+
+    SET i = i + 1;
+END WHILE 
+
+
 
 -- Insert 20 Products
-DECLARE @j INT = 1;
-WHILE @j <= 20
-BEGIN
+
+  WHILE j <= 20 DO
     INSERT INTO Products (ProductName, Price, Stock)
     VALUES (
-        CONCAT('Product', @j),
-        CAST(ROUND(RAND() * (500 - 50) + 50, 2) AS DECIMAL(10,2)),
-        CAST(RAND() * 200 AS INT)
+      CONCAT('Product', j),
+      ROUND(RAND() * (500 - 50) + 50, 2),
+      FLOOR(RAND() * 200)
     );
-    SET @j = @j + 1;
-END
-GO
+    SET j = j + 1;
+  END WHILE;
 
 -- Insert 100 Orders
-DECLARE @k INT = 1;
-WHILE @k <= 100
-BEGIN
+WHILE k <= 100 DO
     INSERT INTO Orders (CustomerID, ProductID, Quantity, OrderDate)
     VALUES (
-        CAST(RAND() * 50 + 1 AS INT),
-        CAST(RAND() * 20 + 1 AS INT),
-        CAST(RAND() * 5 + 1 AS INT),
-        DATEADD(DAY, -CAST(RAND() * 365 AS INT), GETDATE())
+    FLOOR(RAND() * 50 + 1),
+    FLOOR(RAND() * 20 + 1),
+    FLOOR(RAND() * 5 + 1),
+    DATE_SUB(NOW(), INTERVAL FLOOR(RAND() * 365) DAY)
     );
-    SET @k = @k + 1;
-END
-GO
+    SET k = k + 1;
+END WHILE;
+END$$
+
+CALL init_data()$$
+DROP PROCEDURE IF EXISTS init_data$$
+DELIMITER ;
+
