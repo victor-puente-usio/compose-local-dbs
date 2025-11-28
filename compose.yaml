@@ -5,24 +5,40 @@ networks:
     driver: bridge
 
 services:
-  mssql:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: mssql-secure
+  # mssql:
+  #   image: mcr.microsoft.com/mssql/server:2022-latest
+  #   container_name: mssql-secure
+  #   environment:
+  #     - ACCEPT_EULA=Y
+  #     - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD}
+  #     - MSSQL_PID=Developer
+  #     - MSSQL_TLS_CERT=/var/opt/mssql/certs/mssql-cert.pfx
+  #     - MSSQL_TLS_CERT_PASSWORD=${MSSQL_CERT_PASSWORD}
+  #   ports:
+  #     - "${MSSQL_PORT}:1433"
+  #   networks:
+  #     - db-network
+  #   volumes:
+  #     - mssql-data:/var/opt/mssql
+  #     - ./certs:/var/opt/mssql/certs:ro
+  #     - ./mssql-init:/docker-entrypoint-initdb.d
+  #   entrypoint: ["/bin/bash", "/docker-entrypoint-initdb.d/entrypoint.sh"]
+
+    
+  mysql:
+    image: mysql:5.7
+    container_name: mysql-local
     environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD}
-      - MSSQL_PID=Developer
-      - MSSQL_TLS_CERT=/var/opt/mssql/certs/mssql-cert.pfx
-      - MSSQL_TLS_CERT_PASSWORD=${MSSQL_CERT_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
     ports:
-      - "${MSSQL_PORT}:1433"
+      - "${MYSQL_PORT}:3306"
     networks:
       - db-network
     volumes:
-      - mssql-data:/var/opt/mssql
-      - ./certs:/var/opt/mssql/certs:ro
-      - ./mssql-init:/docker-entrypoint-initdb.d
-    entrypoint: ["/bin/bash", "/docker-entrypoint-initdb.d/entrypoint.sh"]
+      - mysql-data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d  # MySQL init scripts
 
 volumes:
   mssql-data:
+  mysql-data:
