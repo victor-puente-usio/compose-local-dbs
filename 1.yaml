@@ -1,0 +1,41 @@
+
+version: '3.9'
+
+networks:
+  db-network:
+    driver: bridge
+
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql-local
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD}
+    ports:
+      - "${MSSQL_PORT}:1433"
+    networks:
+      - db-network
+    volumes:
+      - mssql-data:/var/opt/mssql
+      - ./mssql-init:/docker-entrypoint-initdb.d  # MSSQL init scripts
+    entrypoint: ["/bin/bash", "/docker-entrypoint-initdb.d/entrypoint.sh"]
+
+
+  # mysql:
+  #   image: mysql:5.7
+  #   container_name: mysql-local
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+  #     - MYSQL_DATABASE=${MYSQL_DATABASE}
+  #   ports:
+  #     - "${MYSQL_PORT}:3306"
+  #   networks:
+  #     - db-network
+  #   volumes:
+  #     - mysql-data:/var/lib/mysql
+  #     - ./mysql-init:/docker-entrypoint-initdb.d  # MySQL init scripts
+
+volumes:
+  mssql-data:
+  mysql-data:

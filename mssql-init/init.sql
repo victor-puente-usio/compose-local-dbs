@@ -46,7 +46,7 @@ WHILE i <= 50 DO
     (Name,Email, City)
     VALUES(
         CONCAT("Customer", i),
-        CONCAT("custoomer", i), 
+        CONCAT("custoomer", i))
     CREATE DATABASE testdb;
     GO
 
